@@ -3,7 +3,7 @@
 #include <stdlib.h>
 #include <unistd.h>
 
-#define BUFFSIZE 1024
+#define BUFFSIZE 300000 
 
 char buffer[BUFFSIZE];
 
