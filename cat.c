@@ -94,4 +94,3 @@ int main(){
 	pthread_mutex_destroy(&lock);
 	return 0;
 }
-
