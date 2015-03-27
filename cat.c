@@ -11,7 +11,6 @@ pthread_mutex_t lock = PTHREAD_MUTEX_INITIALIZER;
 pthread_cond_t readCond = PTHREAD_COND_INITIALIZER; 
 pthread_cond_t writeCond = PTHREAD_COND_INITIALIZER; 
 
-int eof;
 int val; 
 
 void *reader(){
@@ -33,7 +32,6 @@ void *reader(){
 		exit(-1);
 	}
 
-	eof = 1;
 	pthread_cond_signal(&writeCond);
 
 	pthread_exit(NULL);
@@ -47,7 +45,7 @@ void *writer(){
 	while(1){
 		pthread_mutex_lock(&lock);
 
-		while((val == 0)&&(eof != 1)){
+		while(val == 0){
 
 			pthread_cond_wait(&writeCond, &lock);
 		}
@@ -74,7 +72,6 @@ void *writer(){
 int main(){
 	pthread_t readThread, writeThread;
 
-	eof = 0;
 	val = 0;
 
 	if(pthread_create(&readThread, NULL, reader, NULL) != 0){
