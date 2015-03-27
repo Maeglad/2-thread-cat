@@ -44,7 +44,7 @@ void *writer(){
 	int writeVal = 0;
 
 
-	while(eof != 1){
+	while(1){
 		pthread_mutex_lock(&lock);
 
 		while((val == 0)&&(eof != 1)){
@@ -59,10 +59,10 @@ void *writer(){
 		if(writeVal == val){
 			writeVal = 0;
 			val = 0;
+		    pthread_cond_signal(&readCond);		
 		}
 
 		
-		pthread_cond_signal(&readCond);
 		pthread_mutex_unlock(&lock);
 	}
 	
@@ -86,8 +86,11 @@ int main(){
 		exit(-1);
 	}
 	pthread_join(readThread, NULL);
+    if(pthread_cancel(writeThread) != 0){
+        perror("pthread_cancel failed");
+        exit(-1);
+    }
 	pthread_join(writeThread, NULL);
-
 	pthread_mutex_destroy(&lock);
 	return 0;
 }
